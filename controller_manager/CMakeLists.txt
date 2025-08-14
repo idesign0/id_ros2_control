@@ -16,7 +16,6 @@ set(THIS_PACKAGE_INCLUDE_DEPENDS
     std_msgs
 )
 
-find_package(Boost REQUIRED)
 find_package(ament_cmake REQUIRED)
 find_package(ament_cmake_python REQUIRED)
 find_package(ament_cmake_core REQUIRED)
