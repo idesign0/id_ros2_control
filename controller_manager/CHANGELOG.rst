@@ -2,6 +2,29 @@
 Changelog for package controller_manager
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+2.53.0 (2025-12-01)
+-------------------
+* Fix dependencies of controller_manager (backport `#2836 <https://github.com/ros-controls/ros2_control/issues/2836>`_) (`#2837 <https://github.com/ros-controls/ros2_control/issues/2837>`_)
+* Update CPU affinity parameter to be able to set multiple CPUs (backport `#1915 <https://github.com/ros-controls/ros2_control/issues/1915>`_, `#2509 <https://github.com/ros-controls/ros2_control/issues/2509>`_) (`#2823 <https://github.com/ros-controls/ros2_control/issues/2823>`_)
+* [Docs] Update determinism section (`#2131 <https://github.com/ros-controls/ros2_control/issues/2131>`_) (`#2785 <https://github.com/ros-controls/ros2_control/issues/2785>`_)
+* Remove Realtime Kernel Check (`#2777 <https://github.com/ros-controls/ros2_control/issues/2777>`_)
+* Contributors: Brian Jin, mergify[bot]
+
+2.52.2 (2025-10-27)
+-------------------
+* Fix concurrent spinning of the test_node (backport `#2721 <https://github.com/ros-controls/ros2_control/issues/2721>`_) (`#2726 <https://github.com/ros-controls/ros2_control/issues/2726>`_)
+* Contributors: mergify[bot]
+
+2.52.1 (2025-10-17)
+-------------------
+* Fix exclusive hardware control mode switching on controller failed activation (backport `#1522 <https://github.com/ros-controls/ros2_control/issues/1522>`_) (`#2579 <https://github.com/ros-controls/ros2_control/issues/2579>`_)
+* Contributors: mergify[bot]
+
+2.52.0 (2025-09-12)
+-------------------
+* Fix CMake install so overriding works (backport `#926 <https://github.com/ros-controls/ros2_control/issues/926>`_) (`#2480 <https://github.com/ros-controls/ros2_control/issues/2480>`_)
+* Contributors: mergify[bot]
+
 2.51.0 (2025-06-06)
 -------------------
 * Cleanup test name (`#2295 <https://github.com/ros-controls/ros2_control/issues/2295>`_) (`#2297 <https://github.com/ros-controls/ros2_control/issues/2297>`_)

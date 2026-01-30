@@ -2,6 +2,22 @@
 Changelog for package controller_interface
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+2.53.0 (2025-12-01)
+-------------------
+
+2.52.2 (2025-10-27)
+-------------------
+
+2.52.1 (2025-10-17)
+-------------------
+
+2.52.0 (2025-09-12)
+-------------------
+* Fix CMake install so overriding works (backport `#926 <https://github.com/ros-controls/ros2_control/issues/926>`_) (`#2480 <https://github.com/ros-controls/ros2_control/issues/2480>`_)
+* Fix missing include for std::find (`#2425 <https://github.com/ros-controls/ros2_control/issues/2425>`_) (`#2426 <https://github.com/ros-controls/ros2_control/issues/2426>`_)
+* Document order of interfaces (`#2394 <https://github.com/ros-controls/ros2_control/issues/2394>`_) (`#2421 <https://github.com/ros-controls/ros2_control/issues/2421>`_)
+* Contributors: mergify[bot]
+
 2.51.0 (2025-06-06)
 -------------------
 

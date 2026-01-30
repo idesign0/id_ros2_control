@@ -11,11 +11,12 @@ Determinism
 -----------
 
 For best performance when controlling hardware you want the controller manager to have as little jitter as possible in the main control loop.
-The normal linux kernel is optimized for computational throughput and therefore is not well suited for hardware control.
-The two easiest kernel options are the `Real-time Ubuntu 22.04 LTS Beta <https://ubuntu.com/blog/real-time-ubuntu-released>`_ or `linux-image-rt-amd64 <https://packages.debian.org/bullseye/linux-image-rt-amd64>`_ on Debian Bullseye.
 
-If you have a realtime kernel installed, the main thread of Controller Manager attempts to configure ``SCHED_FIFO`` with a priority of ``50``.
-By default, the user does not have permission to set such a high priority.
+Independent of the kernel installed, the main thread of Controller Manager attempts to
+configure ``SCHED_FIFO`` with a priority of ``50``. Read more about the scheduling policies
+`for example here <https://blogs.oracle.com/linux/post/task-priority>`__.
+
+For real-time tasks, a priority range of 0 to 99 is expected, with higher numbers indicating higher priority. By default, users do not have permission to set such high priorities.
 To give the user such permissions, add a group named realtime and add the user controlling your robot to this group:
 
 .. code-block:: console
@@ -36,6 +37,27 @@ Afterwards, add the following limits to the realtime group in ``/etc/security/li
 
 The limits will be applied after you log out and in again.
 
+You can run ros2_control with real-time requirements also from a docker container. Pass the following capability options to allow the container to set the thread priority and lock memory, e.g.,
+
+.. code-block:: console
+
+    $ docker run -it \
+        --cap-add=sys_nice \
+        --ulimit rtprio=99 \
+        --ulimit memlock=-1 \
+        --rm --net host <IMAGE>
+
+For more information, see the Docker engine documentation about `resource_constraints <https://docs.docker.com/engine/containers/resource_constraints/#configure-the-real-time-scheduler>`__ and `linux capabilities <https://docs.docker.com/engine/containers/run/#runtime-privilege-and-linux-capabilities>`__.
+
+The normal linux kernel is optimized for computational throughput and therefore is not well suited for hardware control.
+Alternatives to the standard kernel include
+
+- `Real-time Ubuntu <https://ubuntu.com/real-time>`_ on Ubuntu (also for RaspberryPi)
+- `linux-image-rt-amd64 <https://packages.debian.org/search?searchon=names&keywords=linux-image-rt-amd64>`__ or `linux-image-rt-arm64 <https://packages.debian.org/search?suite=default&section=all&arch=any&searchon=names&keywords=linux-image-rt-arm64>`__ on Debian for 64-bit PCs
+- `lowlatency kernel <https://ubuntu.com/blog/industrial-embedded-systems>`__ (``sudo apt install linux-lowlatency``) on any Ubuntu
+
+Though installing a realtime-kernel will definitely get the best results when it comes to low
+jitter, using a lowlatency kernel can improve things a lot with being really easy to install.
 
 Subscribers
 -----------
@@ -334,9 +356,10 @@ lock_memory (optional; bool; default: false for a non-realtime kernel, true for 
   Find more information about the setup for memory locking in the following link : `How to set ulimit values <https://access.redhat.com/solutions/61334>`_
   The following command can be used to set the memory locking limit temporarily : ``ulimit -l unlimited``.
 
-cpu_affinity (optional; int; default: -1)
+cpu_affinity (optional; int (or) int_array;)
   Sets the CPU affinity of the ``controller_manager`` node to the specified CPU core.
-  The value of -1 means that the CPU affinity is not set.
+  If it is an integer, the node's affinity will be set to the specified CPU core.
+  If it is an array of integers, the node's affinity will be set to the specified set of CPU cores.
 
 thread_priority (optional; int; default: 50)
   Sets the thread priority of the ``controller_manager`` node to the specified value. The value must be between 0 and 99.
@@ -359,3 +382,9 @@ Restarting hardware
 If hardware gets restarted then you should go through its lifecycle again.
 This can be simply achieved by returning ``ERROR`` from ``write`` and ``read`` methods of interface implementation.
 **NOT IMPLEMENTED YET - PLEASE STOP/RESTART ALL CONTROLLERS MANUALLY FOR NOW** The controller manager detects that and stops all the controllers that are commanding that hardware and restarts broadcasters that are listening to its states.
+
+Factors that affect Determinism
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+When run under the conditions determined in the above section, the determinism is assured up to the limitations of the hardware and the real-time kernel. However, there are some situations that can affect determinism:
+
+* When a controller fails to activate, the controller_manager will call the methods ``prepare_command_mode_switch`` and ``perform_command_mode_switch`` to stop the started interfaces. These calls can cause jitter in the main control loop.
